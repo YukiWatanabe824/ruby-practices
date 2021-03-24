@@ -11,7 +11,7 @@ def fizzbuzz
     else
       puts num
     end
-	}
+  }
 end
 
 fizzbuzz
