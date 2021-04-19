@@ -7,31 +7,31 @@ class Calendar
   #コマンドラインからの情報を取得&デフォルトで現在日を指定
   def initialize
     opt = OptionParser.new
-    params = opt.getopts(ARGV,"","y:#{Date.today.year}", "m:#{Date.today.month}")
+    params = opt.getopts("", "y:#{Date.today.year}", "m:#{Date.today.month}")
     @year = params["y"].to_i
     @month = params["m"].to_i
   end
 
   #ヘッダー（年月表示、曜日表示）
   def calheader 
-    days = ["日","月","火","水","木","金","土"]
-    puts "      #{(@month)}月#{(@year)}年"
+    days = ["日", "月", "火", "水", "木", "金", "土"]
+    puts "      #{(@month)}月 #{(@year)}年"
     puts days.join(" ")
   end
 
   #カレンダーの日にち取得
-  def fetch_date(year = @year,month = @month)
+  def fetch_date(year = @year, month = @month)
     first_day = 1
-    last_day_of_month = Date.new(year,month,first_day).next_month.prev_day.day
+    last_day_of_month = Date.new(year, month, first_day).next_month.prev_day.day
 
     @rawdays = [*(first_day..last_day_of_month)].map do |day|
-      Date.new(year,month,day)
+      Date.new(year, month, day)
     end
   end
 
   #日にちをカレンダーの形式に合わせる
   def set_calendarstyle(rawdays = @rawdays)
-    rawdays.each_with_index do |oneday,idx|
+    rawdays.each_with_index do |oneday, idx|
       #すべての日にちに半角スペースを追加
       day_halfspace = " " + oneday.day.to_s
       #一桁の日にちに半角スペースを追加
