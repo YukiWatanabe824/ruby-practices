@@ -22,9 +22,8 @@ class Calendar
   #カレンダーの日にち取得
   def fetch_date(year = @year, month = @month)
     first_day = 1
-    last_day_of_month = Date.new(year, month, first_day).next_month.prev_day.day
-
-    @rawdays = [*(first_day..last_day_of_month)].map do |day|
+    last_day = Date.new(year, month, -1).day
+    @rawdays = [*(first_day..last_day)].map do |day|
       Date.new(year, month, day)
     end
   end
