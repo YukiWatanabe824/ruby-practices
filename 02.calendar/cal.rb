@@ -13,7 +13,7 @@ class Calendar
   end
 
   #ヘッダー（年月表示、曜日表示）
-  def calheader 
+  def calheader
     days = ["日", "月", "火", "水", "木", "金", "土"]
     puts "      #{(@month)}月 #{(@year)}年"
     puts days.join(" ")
