@@ -10,6 +10,7 @@ class Calendar
     params = opt.getopts("", "y:#{Date.today.year}", "m:#{Date.today.month}")
     @year = params["y"].to_i
     @month = params["m"].to_i
+    fetch_date
   end
 
   #ヘッダー（年月表示、曜日表示）
@@ -66,11 +67,20 @@ class Calendar
       end
     end
   end
+  
+  private
+  #カレンダーの日にち取得
+  def fetch_date(year = @year, month = @month)
+    first_day = 1
+    last_day = Date.new(year, month, -1).day
+    @rawdays = [*(first_day..last_day)].map do |day|
+      Date.new(year, month, day)
+    end
+  end
 end
 
 cal = Calendar.new
 
 cal.calheader
-cal.fetch_date
 cal.set_calendarstyle
 puts "\n\n"
