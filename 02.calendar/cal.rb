@@ -30,8 +30,8 @@ class Calendar
   end
 
   #日にちをカレンダーの形式に合わせる
-  def set_calendarstyle(rawdays = @rawdays)
-    rawdays.each_with_index do |oneday, idx|
+  def export_calendarstyle
+    @rawdays.each_with_index do |oneday, idx|
       #すべての日にちに半角スペースを追加
       day_halfspace = " " + oneday.day.to_s
       #一桁の日にちに半角スペースを追加
@@ -82,5 +82,5 @@ end
 cal = Calendar.new
 
 cal.calheader
-cal.set_calendarstyle
+cal.export_calendarstyle
 puts "\n\n"
