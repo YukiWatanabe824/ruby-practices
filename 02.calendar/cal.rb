@@ -14,7 +14,7 @@ class Calendar
   end
 
   #ヘッダー（年月表示、曜日表示）
-  def calheader
+  def output_calheader
     days = ["日", "月", "火", "水", "木", "金", "土"]
     puts "      #{(@month)}月 #{(@year)}年"
     puts days.join(" ")
@@ -81,6 +81,6 @@ end
 
 cal = Calendar.new
 
-cal.calheader
+cal.output_calheader
 cal.export_calendarstyle
 puts "\n\n"
