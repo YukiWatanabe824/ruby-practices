@@ -15,18 +15,8 @@ class Calendar
 
   #ヘッダー（年月表示、曜日表示）
   def output_calheader
-    days = ["日", "月", "火", "水", "木", "金", "土"]
-    puts "      #{(@month)}月 #{(@year)}年"
-    puts days.join(" ")
-  end
-
-  #カレンダーの日にち取得
-  def fetch_date(year = @year, month = @month)
-    first_day = 1
-    last_day = Date.new(year, month, -1).day
-    @rawdays = [*(first_day..last_day)].map do |day|
-      Date.new(year, month, day)
-    end
+    puts "#{@month}月 #{@year}年".center(20)
+    puts ["日", "月", "火", "水", "木", "金", "土"].join(" ")
   end
 
   #日にちをカレンダーの形式に合わせる
@@ -70,11 +60,11 @@ class Calendar
   
   private
   #カレンダーの日にち取得
-  def fetch_date(year = @year, month = @month)
+  def fetch_date
     first_day = 1
-    last_day = Date.new(year, month, -1).day
+    last_day = Date.new(@year, @month, -1).day
     @rawdays = [*(first_day..last_day)].map do |day|
-      Date.new(year, month, day)
+      Date.new(@year, @month, day)
     end
   end
 end
