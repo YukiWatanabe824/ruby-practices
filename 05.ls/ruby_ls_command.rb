@@ -57,7 +57,7 @@ class LsCommand
   def output_filetime(filestat)
     file_birth_day = Date.new(filestat.ctime.year, filestat.ctime.month, filestat.ctime.day)
     today = Date.today
-    if today - file_birth_day <= 183 || file_birth_today - today >= -183
+    if today - file_birth_day <= 183 || file_birth_day - today >= -183
       print "#{filestat.ctime.month.to_s.rjust(2)} #{filestat.ctime.day.to_s.rjust(2)} "
       print "#{filestat.ctime.hour.to_s.rjust(2, '0')}:#{filestat.ctime.min.to_s.rjust(2, '0')} "
     else
