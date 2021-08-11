@@ -11,6 +11,8 @@ path = ARGV.last
 if path.nil? || path.match?(/-[arl][arl]?[arl]?/)
   directory_and_file_list = Dir.entries('./')
   path = './'
+elsif path == '~'
+  directory_and_file_list = Dir.entries('/')
 else
   directory_and_file_list = Dir.entries(path)
 end
@@ -109,13 +111,18 @@ class LsCommand
   def output_normal_format(directory_and_file_list)
     max_char_space = @directory_and_file_list.max_by(&:length).length
     char_space = max_char_space > 20 ? max_char_space : 20
+    d_len = directory_and_file_list.length
+    normal_format_output_part(directory_and_file_list, char_space, d_len)
+  end
 
-    directory_and_file_list.each_with_index do |d, idx|
-      if ((idx + 1) % 3).zero? || d == directory_and_file_list.last
-        puts directory_and_file_list[idx]
-      else
-        print "#{directory_and_file_list[idx].ljust(char_space)}  "
-      end
+  def normal_format_output_part(dir_file_list, char_space, d_len)
+    dir_file_list.each_with_index do |d, idx|
+      next if idx >= (d_len / 3) + (d_len % 3)
+
+      print d.ljust(char_space)
+      print dir_file_list[(d_len / 3) + (idx + d_len % 3)].ljust(char_space) unless (d_len / 3) + (idx + d_len % 3) >= (d_len / 3 * 2 + d_len % 3)
+      puts dir_file_list[(d_len / 3 * 2) + (idx + d_len % 3)] unless (d_len / 3 * 2) + (idx + d_len % 3) >= d_len
+      puts ' ' if (d_len / 3 * 2) + (idx + d_len % 3) >= d_len
     end
   end
 end
