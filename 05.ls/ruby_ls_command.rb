@@ -9,30 +9,30 @@ command_option = command_option.join
 
 path = ARGV.last
 if path.nil? || path.match?(/-[arl][arl]?[arl]?/)
-  directory_and_file_list = Dir.entries('./')
+  dir_file_list = Dir.entries('./')
   path = './'
 elsif path == '~'
-  directory_and_file_list = Dir.entries('/')
+  dir_file_list = Dir.entries('/')
 else
-  directory_and_file_list = Dir.entries(path)
+  dir_file_list = Dir.entries(path)
 end
-directory_and_file_list = directory_and_file_list.sort
+dir_file_list = dir_file_list.sort
 
 class LsCommand
-  def initialize(directory_and_file_list, path, command_option)
-    @directory_and_file_list = directory_and_file_list
+  def initialize(dir_file_list, path, command_option)
+    @dir_file_list = dir_file_list
     @command_option = command_option
     @path = path
   end
 
   def set_option_format_and_output
-    @command_option.match?(/a/) ? @directory_and_file_list : @directory_and_file_list.delete_if { |dir| dir =~ /^\..*/ }
-    directory_and_file_list = @command_option.match?(/r/) ? @directory_and_file_list.reverse : @directory_and_file_list
-    @command_option.match?(/l/) ? output_l_option_format(directory_and_file_list) : output_normal_format(directory_and_file_list)
+    @command_option.match?(/a/) ? @dir_file_list : @dir_file_list.delete_if { |dir| dir =~ /^\..*/ }
+    dir_file_list = @command_option.match?(/r/) ? @dir_file_list.reverse : @dir_file_list
+    @command_option.match?(/l/) ? output_l_option_format(dir_file_list) : output_normal_format(dir_file_list)
   end
 
-  def output_l_option_format(directory_and_file_list)
-    filestat_info = directory_and_file_list.map { |f| File::Stat.new(@path + f) }
+  def output_l_option_format(dir_file_list)
+    filestat_info = dir_file_list.map { |f| File::Stat.new(@path + f) }
 
     size_length = filestat_info.map { |f| f.size.to_s }
     size_length = size_length.max_by(&:length).length
@@ -50,7 +50,7 @@ class LsCommand
       print "#{Etc.getgrgid(f.gid).name}  "
       print "#{f.size.to_s.rjust(size_length)}  "
       output_filetime(f)
-      puts directory_and_file_list[idx]
+      puts dir_file_list[idx]
     end
   end
 
@@ -108,11 +108,11 @@ class LsCommand
     }[type]
   end
 
-  def output_normal_format(directory_and_file_list)
-    max_char_space = @directory_and_file_list.max_by(&:length).length
+  def output_normal_format(dir_file_list)
+    max_char_space = @dir_file_list.max_by(&:length).length
     char_space = max_char_space > 20 ? max_char_space : 20
-    d_len = directory_and_file_list.length
-    normal_format_output_part(directory_and_file_list, char_space, d_len)
+    d_len = dir_file_list.length
+    normal_format_output_part(dir_file_list, char_space, d_len)
   end
 
   def normal_format_output_part(dir_file_list, char_space, d_len)
@@ -127,5 +127,5 @@ class LsCommand
   end
 end
 
-lscommand = LsCommand.new(directory_and_file_list, path, command_option)
+lscommand = LsCommand.new(dir_file_list, path, command_option)
 lscommand.set_option_format_and_output
