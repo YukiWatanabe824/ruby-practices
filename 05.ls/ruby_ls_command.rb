@@ -112,17 +112,22 @@ class LsCommand
     max_char_space = @dir_file_list.max_by(&:length).length
     char_space = max_char_space > 20 ? max_char_space : 20
     d_len = dir_file_list.length
-    normal_format_output_part(dir_file_list, char_space, d_len)
-  end
-
-  def normal_format_output_part(dir_file_list, char_space, d_len)
-    dir_file_list.each_with_index do |d, idx|
-      next if idx >= (d_len / 3) + (d_len % 3)
-
-      print d.ljust(char_space)
-      print dir_file_list[(d_len / 3) + (idx + d_len % 3)].ljust(char_space) unless (d_len / 3) + (idx + d_len % 3) >= (d_len / 3 * 2 + d_len % 3)
-      puts dir_file_list[(d_len / 3 * 2) + (idx + d_len % 3)] unless (d_len / 3 * 2) + (idx + d_len % 3) >= d_len
-      puts ' ' if (d_len / 3 * 2) + (idx + d_len % 3) >= d_len
+    
+    row = 3
+    max_column = (d_len / row) + (d_len % row == 0 ? 0 : 1)
+    dir_file_array = []
+    dir_file_list.each_slice(max_column){|val| dir_file_array << val}
+    max_size = dir_file_array.map(&:size).max
+    dir_file_array.map!{|val| val.values_at(0...max_size)}
+    dir_file_array = dir_file_array.transpose
+    dir_file_array.each do |val|
+      val.each do |val_child|
+        if val_child == val.last
+          puts val_child
+        else
+          print "#{val_child}".ljust(char_space) + " "
+        end
+      end
     end
   end
 end
