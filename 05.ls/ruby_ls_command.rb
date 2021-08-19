@@ -16,7 +16,7 @@ elsif path == '~'
 else
   dir_file_list = Dir.entries(path)
 end
-dir_file_list = dir_file_list.sort
+dir_file_list.sort!
 
 class LsCommand
   def initialize(dir_file_list, path, command_option)
@@ -26,8 +26,8 @@ class LsCommand
   end
 
   def set_option_format_and_output
-    @command_option.match?(/a/) ? @dir_file_list : @dir_file_list.delete_if { |dir| dir =~ /^\..*/ }
-    dir_file_list = @command_option.match?(/r/) ? @dir_file_list.reverse : @dir_file_list
+    @dir_file_list.delete_if { |dir| dir =~ /^\..*/ } unless @command_option.match?(/a/)
+    @dir_file_list.reverse! if @command_option.match(/r/)
     @command_option.match?(/l/) ? output_l_option_format(dir_file_list) : output_normal_format(dir_file_list)
   end
 
