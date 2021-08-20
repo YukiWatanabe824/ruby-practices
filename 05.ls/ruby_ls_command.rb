@@ -28,7 +28,7 @@ class LsCommand
   def set_option_format_and_output
     @dir_file_list.delete_if { |dir| dir =~ /^\..*/ } unless @command_option.match?(/a/)
     @dir_file_list.reverse! if @command_option.match(/r/)
-    @command_option.match?(/l/) ? output_l_option_format(dir_file_list) : output_normal_format(dir_file_list)
+    @command_option.match?(/l/) ? output_l_option_format(@dir_file_list) : output_normal_format(@dir_file_list)
   end
 
   def output_l_option_format(dir_file_list)
@@ -37,8 +37,7 @@ class LsCommand
     size_length = filestat_info.map { |f| f.size.to_s }
     size_length = size_length.max_by(&:length).length
 
-    file_blocks = filestat_info.map(&:blocks)
-    sum_file_blocks = file_blocks.inject { |result, item| result + item }
+    sum_file_blocks = filestat_info.map(&:blocks).sum
     puts "total #{sum_file_blocks}"
 
     filestat_info.each_with_index do |f, idx|
@@ -57,11 +56,11 @@ class LsCommand
   def output_filetime(filestat)
     file_birth_day = Date.new(filestat.ctime.year, filestat.ctime.month, filestat.ctime.day)
     today = Date.today
-    if today - file_birth_day <= 183 || file_birth_day - today >= -183
+    if file_birth_day <= today.prev_month(6) || file_birth_day >= today.next_month(6)
+      print "#{filestat.ctime.month.to_s.rjust(2)} #{filestat.ctime.day.to_s.rjust(2)} #{filestat.ctime.year.to_s.rjust(5)} "
+    else
       print "#{filestat.ctime.month.to_s.rjust(2)} #{filestat.ctime.day.to_s.rjust(2)} "
       print "#{filestat.ctime.hour.to_s.rjust(2, '0')}:#{filestat.ctime.min.to_s.rjust(2, '0')} "
-    else
-      print "#{filestat.ctime.month.to_s.rjust(2)} #{filestat.ctime.day.to_s.rjust(2)} #{filestat.ctime.year.to_s.rjust(5)} "
     end
   end
 
