@@ -27,7 +27,7 @@ class LsCommand
 
   def set_option_format_and_output
     @dir_file_list.delete_if { |dir| dir =~ /^\..*/ } unless @command_option.match?(/a/)
-    @dir_file_list.reverse! if @command_option.match(/r/)
+    @dir_file_list.reverse! if @command_option.match?(/r/)
     @command_option.match?(/l/) ? output_l_option_format(@dir_file_list) : output_normal_format(@dir_file_list)
   end
 
@@ -70,16 +70,16 @@ class LsCommand
       next if fmode_idx < 3
 
       permission_value =
-      case fmode[2]
-      when '1'
-        permission(fmode_num)[2] == '-' ? 't' : 'T'
-      when '2'
-        permission(fmode_num)[0] == '-' ? 's' : 'S'
-      when '4'
-        permission(fmode_num)[1] == '-' ? 's' : 'S'
-      else
-        permission(smode_num)
-      end
+        case fmode[2]
+        when '1'
+          permission(fmode_num)[2] == '-' ? 't' : 'T'
+        when '2'
+          permission(fmode_num)[0] == '-' ? 's' : 'S'
+        when '4'
+          permission(fmode_num)[1] == '-' ? 's' : 'S'
+        else
+          permission(fmode_num)
+        end
       print permission_value
     end
   end
@@ -110,23 +110,23 @@ class LsCommand
   end
 
   def output_normal_format(dir_file_list)
-    max_char_space = @dir_file_list.max_by(&:length).length
+    max_char_space = dir_file_list.max_by(&:length).length
     char_space = max_char_space > 20 ? max_char_space : 20
     d_len = dir_file_list.length
-    
+
     row = 3
-    max_column = (d_len / row) + (d_len % row == 0 ? 0 : 1)
+    max_column = (d_len / row) + ((d_len % row).zero? ? 0 : 1)
     dir_file_array = []
-    dir_file_list.each_slice(max_column){|val| dir_file_array << val}
+    dir_file_list.each_slice(max_column) { |val| dir_file_array << val }
     max_size = dir_file_array.map(&:size).max
-    dir_file_array.map!{|val| val.values_at(0...max_size)}
+    dir_file_array.map! { |val| val.values_at(0...max_size) }
     dir_file_array = dir_file_array.transpose
     dir_file_array.each do |dir_file|
-      val.each do |d_f_child|
+      dir_file.each do |d_f_child|
         if d_f_child == dir_file.last
           puts d_f_child
         else
-          print "#{d_f_child}".ljust(char_space) + " "
+          print "#{d_f_child.to_s.ljust(char_space)} "
         end
       end
     end
