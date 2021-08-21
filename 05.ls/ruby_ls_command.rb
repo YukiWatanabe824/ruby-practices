@@ -69,14 +69,16 @@ class LsCommand
     fmode.each_with_index do |fmode_num, fmode_idx|
       next if fmode_idx < 3
 
-      permission_value = permission(fmode_num)
+      permission_value =
       case fmode[2]
       when '1'
-        permission_value = permission_value[2] == '-' ? 't' : 'T'
+        permission(fmode_num)[2] == '-' ? 't' : 'T'
       when '2'
-        permission_value = permission(fmode_num)[0] == '-' ? 's' : 'S'
+        permission(fmode_num)[0] == '-' ? 's' : 'S'
       when '4'
-        permission_value = permission(fmode_num)[1] == '-' ? 's' : 'S'
+        permission(fmode_num)[1] == '-' ? 's' : 'S'
+      else
+        permission(smode_num)
       end
       print permission_value
     end
@@ -119,12 +121,12 @@ class LsCommand
     max_size = dir_file_array.map(&:size).max
     dir_file_array.map!{|val| val.values_at(0...max_size)}
     dir_file_array = dir_file_array.transpose
-    dir_file_array.each do |val|
-      val.each do |val_child|
-        if val_child == val.last
-          puts val_child
+    dir_file_array.each do |dir_file|
+      val.each do |d_f_child|
+        if d_f_child == dir_file.last
+          puts d_f_child
         else
-          print "#{val_child}".ljust(char_space) + " "
+          print "#{d_f_child}".ljust(char_space) + " "
         end
       end
     end
