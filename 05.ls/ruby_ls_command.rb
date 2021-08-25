@@ -19,7 +19,7 @@ end
 dir_file_list.sort!
 
 class LsCommand
-  Column = 3
+  DEFAULT_COLUMN = 3
 
   def initialize(dir_file_list, path, command_option)
     @dir_file_list = dir_file_list
@@ -114,22 +114,18 @@ class LsCommand
   def output_normal_format(dir_file_list)
     max_char_space = dir_file_list.max_by(&:length).length
     char_space = max_char_space > 20 ? max_char_space : 20
-    d_len = dir_file_list.length
 
-    row = (d_len / Column) + ((d_len % Column).zero? ? 0 : 1)
-    dir_file_array = []
-    dir_file_list.each_slice(row) { |val| dir_file_array << val }
-    max_size = dir_file_array.map(&:size).max
-    dir_file_array.map! { |val| val.values_at(0...max_size) }
-    dir_file_array = dir_file_array.transpose
-    dir_file_array.each do |dir_file|
-      dir_file.each do |d_f_child|
-        if d_f_child == dir_file.last
-          puts d_f_child
-        else
-          print "#{d_f_child.to_s.ljust(char_space)} "
-        end
+    row = (dir_file_list.length / DEFAULT_COLUMN) + ((dir_file_list.length % DEFAULT_COLUMN).zero? ? 0 : 1)
+    dir_file_all_line = []
+    dir_file_list.each_slice(row) { |val| dir_file_all_line << val }
+    max_size = dir_file_all_line.map(&:size).max
+    dir_file_all_line.map! { |val| val.values_at(0...max_size) }
+    dir_file_all_line = dir_file_all_line.transpose
+    dir_file_all_line.each do |dir_file_one_line|
+      dir_file_one_line.map! do |dir_file|
+        dir_file.to_s.ljust(char_space)
       end
+      puts dir_file_one_line.join(' ')
     end
   end
 end
