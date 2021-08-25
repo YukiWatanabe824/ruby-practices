@@ -19,6 +19,8 @@ end
 dir_file_list.sort!
 
 class LsCommand
+  Column = 3
+
   def initialize(dir_file_list, path, command_option)
     @dir_file_list = dir_file_list
     @command_option = command_option
@@ -114,10 +116,9 @@ class LsCommand
     char_space = max_char_space > 20 ? max_char_space : 20
     d_len = dir_file_list.length
 
-    row = 3
-    max_column = (d_len / row) + ((d_len % row).zero? ? 0 : 1)
+    row = (d_len / Column) + ((d_len % Column).zero? ? 0 : 1)
     dir_file_array = []
-    dir_file_list.each_slice(max_column) { |val| dir_file_array << val }
+    dir_file_list.each_slice(row) { |val| dir_file_array << val }
     max_size = dir_file_array.map(&:size).max
     dir_file_array.map! { |val| val.values_at(0...max_size) }
     dir_file_array = dir_file_array.transpose
