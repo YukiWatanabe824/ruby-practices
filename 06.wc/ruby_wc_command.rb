@@ -5,31 +5,26 @@ require 'optparse'
 
 def main
   option = ARGV.getopts('l')
-  #ARGVは可能な限り使わない。mainメソッドで変数に代入する
-  #それによって他所で使っているARGVを修正する
-  text_params = (FileTest.exist?(ARGV[0].to_s) ? generate_path_text : serch_pipe_input)
-  # paramsはNG、〜listがよさげ
-  # search_pipe_inputはgenerate〜に揃える
-  option['l'] ? short_format(text_params) : long_format(text_params)
-  #アウトプットするメソッドは統合してメソッド引数としてLオプションを取るほうがスマート
+  path_list = ARGV
+  file_info_list = (FileTest.exist?(path_list[0].to_s) ? file_info_list_by_path(path_list) : file_info_list_by_stdin)
+  file_info_list.each { |params| print_format(params, option['l']) }
+  print_total(file_info_list, option['l']) if file_info_list.size > 1
 end
 
-def generate_path_text
-  ARGV.map do |path|
+def file_info_list_by_path(path_list)
+  path_list.map do |path|
     path_text = IO.read(path)
-    create_text_params(path_text, path)
+    create_file_info_list(path_text, path)
   end
 end
 
-def serch_pipe_input
+def file_info_list_by_stdin
   $stdin.tty? ? input_text : pipe_text
 end
 
 def pipe_text
   pipe_text = $stdin.read
-  text_params = []
-  text_params << create_text_params(pipe_text, nil)
-  #【】を使って配列化する
+  [create_file_info_list(pipe_text, nil)]
 end
 
 def input_text
@@ -37,54 +32,39 @@ def input_text
   while (line = $stdin.gets)
     stdin_text << line
   end
-  text_params = []
-  text_params << create_text_params(stdin_text.join, nil)
-  #【】を使って配列化する
+  [create_file_info_list(stdin_text.join, nil)]
 end
 
-def create_text_params(text, path)
+def create_file_info_list(text, path)
   {
     line: text.split("\n").size,
     word: text.split(/\s+/).size,
     bytesize: text.bytesize,
-    filename: (path == true ? path : nil)
+    filename: (path ? path : "")
   }
 end
 
-def filename
-
+def print_format(info, option)
+  printf("%<line>8s", info)
+  printf(["%<word>8s", 
+          "%<bytesize>8s"].join, info) unless option == true
+  printf(" %<filename>s\n", info)
 end
 
-#出力の文字数を調整するメソッドを追加
-#出力メソッドは統合する
-def short_format(text_params)
-  text_params.each_with_index do |params, idx|
-    print params[:line].to_s.rjust(8)
-    puts " #{ARGV[idx]}" if ARGV.size >= 0
-  end
-  line_total = text_params.map { |params| params[:line] }.sum
-  puts "#{line_total.to_s.rjust(8)} total" if text_params.size > 1
-end
+def print_total(file_info_list, option)
+  total_file_info = build_total_file_info(file_info_list)
 
-def long_format(text_params)
-  text_params.each_with_index do |params, idx|
-    print params[:line].to_s.rjust(8)
-    print params[:word].to_s.rjust(8)
-    print params[:bytesize].to_s.rjust(8)
-    puts " #{ARGV[idx]}" if ARGV.size >= 0
-  end
-  long_format_total(text_params) if text_params.size > 1
-end
-
-def long_format_total(text_params)
-  line_total = text_params.map { |params| params[:line] }.sum
-  word_total = text_params.map { |params| params[:word] }.sum
-  bytesize_total = text_params.map { |params| params[:bytesize] }.sum
-
-  print line_total.to_s.rjust(8)
-  print word_total.to_s.rjust(8)
-  print bytesize_total.to_s.rjust(8)
+  printf("%<line_total>8s", total_file_info)
+  printf(["%<word_total>8s",
+         "%<bytesize_total>8s"].join, total_file_info) unless option == true
   puts ' total'
 end
 
+def build_total_file_info(file_info_list)
+  {
+    line_total: file_info_list.map { |info| info[:line] }.sum,
+    word_total: file_info_list.map { |info| info[:word] }.sum,
+    bytesize_total: file_info_list.map { |info| info[:bytesize] }.sum
+  }
+end
 main
