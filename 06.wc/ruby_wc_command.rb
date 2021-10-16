@@ -40,23 +40,21 @@ def create_file_info_list(text, path)
     line: text.split("\n").size,
     word: text.split(/\s+/).size,
     bytesize: text.bytesize,
-    filename: (path ? path : "")
+    filename: (path || '')
   }
 end
 
 def print_format(info, option)
-  printf("%<line>8s", info)
-  printf(["%<word>8s", 
-          "%<bytesize>8s"].join, info) unless option == true
+  printf('%<line>8s', info)
+  printf(['%<word>8s', '%<bytesize>8s'].join, info) if option != true
   printf(" %<filename>s\n", info)
 end
 
 def print_total(file_info_list, option)
   total_file_info = build_total_file_info(file_info_list)
 
-  printf("%<line_total>8s", total_file_info)
-  printf(["%<word_total>8s",
-         "%<bytesize_total>8s"].join, total_file_info) unless option == true
+  printf('%<line_total>8s', total_file_info)
+  printf(['%<word_total>8s', '%<bytesize_total>8s'].join, total_file_info) if option != true
   puts ' total'
 end
 
