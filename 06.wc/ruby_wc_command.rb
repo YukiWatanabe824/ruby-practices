@@ -6,15 +6,14 @@ require 'optparse'
 def main
   option = ARGV.getopts('l')
   path_list = ARGV
-  file_info_list = (FileTest.exist?(path_list[0].to_s) ? file_info_list_by_path(path_list) : file_info_list_by_stdin)
-  file_info_list.each { |params| print_format(params, option['l']) }
-  print_total(file_info_list, option['l']) if file_info_list.size > 1
+  file_info_list = FileTest.exist?(path_list[0].to_s) ? file_info_list_by_path(path_list) : file_info_list_by_stdin
+  print_file_info(file_info_list, path_list, option['l'])
 end
 
 def file_info_list_by_path(path_list)
   path_list.map do |path|
     path_text = IO.read(path)
-    create_file_info_list(path_text, path)
+    create_file_info(path_text, path)
   end
 end
 
@@ -24,7 +23,7 @@ end
 
 def pipe_text
   pipe_text = $stdin.read
-  [create_file_info_list(pipe_text, nil)]
+  [create_file_info(pipe_text, nil)]
 end
 
 def input_text
@@ -32,10 +31,10 @@ def input_text
   while (line = $stdin.gets)
     stdin_text << line
   end
-  [create_file_info_list(stdin_text.join, nil)]
+  [create_file_info(stdin_text.join, nil)]
 end
 
-def create_file_info_list(text, path)
+def create_file_info(text, path)
   {
     line: text.split("\n").size,
     word: text.split(/\s+/).size,
@@ -44,25 +43,22 @@ def create_file_info_list(text, path)
   }
 end
 
-def print_format(info, option)
-  printf('%<line>8s', info)
-  printf(['%<word>8s', '%<bytesize>8s'].join, info) if option != true
-  printf(" %<filename>s\n", info)
-end
-
-def print_total(file_info_list, option)
-  total_file_info = build_total_file_info(file_info_list)
-
-  printf('%<line_total>8s', total_file_info)
-  printf(['%<word_total>8s', '%<bytesize_total>8s'].join, total_file_info) if option != true
-  puts ' total'
+def print_file_info(file_info_list, path_list, print_line_only)
+  file_info_list << build_total_file_info(file_info_list) if path_list.size > 1
+  file_info_list.each do |info|
+    printf('%<line>8s', info)
+    printf('%<word>8s%<bytesize>8s', info) unless print_line_only
+    printf(" %<filename>s\n", info)
+  end
 end
 
 def build_total_file_info(file_info_list)
   {
-    line_total: file_info_list.map { |info| info[:line] }.sum,
-    word_total: file_info_list.map { |info| info[:word] }.sum,
-    bytesize_total: file_info_list.map { |info| info[:bytesize] }.sum
+    line: file_info_list.map { |info| info[:line] }.sum,
+    word: file_info_list.map { |info| info[:word] }.sum,
+    bytesize: file_info_list.map { |info| info[:bytesize] }.sum,
+    filename: 'total'
   }
 end
+
 main
