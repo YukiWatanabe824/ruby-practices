@@ -6,8 +6,8 @@ require 'optparse'
 def main
   option = ARGV.getopts('l')
   path_list = ARGV
-  file_info_list = FileTest.exist?(path_list[0].to_s) ? file_info_list_by_path(path_list) : file_info_list_by_stdin
-  print_wc_command(file_info_list, path_list, option['l'])
+  file_info_list = path_list.size >= 1 ? file_info_list_by_path(path_list) : file_info_list_by_stdin
+  print_file_info(file_info_list, path_list, option['l'])
 end
 
 def file_info_list_by_path(path_list)
@@ -43,11 +43,11 @@ def create_file_info(text, path)
   }
 end
 
-def print_wc_command(file_info_list, path_list, print_line_only)
+def print_file_info(file_info_list, path_list, line_only)
   file_info_list << build_total_file_info(file_info_list) if path_list.size > 1
   file_info_list.each do |info|
     printf('%<line>8s', info)
-    printf('%<word>8s%<bytesize>8s', info) unless print_line_only
+    printf('%<word>8s%<bytesize>8s', info) unless line_only
     printf(" %<filename>s\n", info)
   end
 end
