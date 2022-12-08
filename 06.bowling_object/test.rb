@@ -45,13 +45,7 @@ end
 class Frame
   attr_reader :first_shot, :second_shot, :third_shot
 
-#  - 1フレーム原則2投、例外で3投
-#    - 1〜3投の結果を受け取って、各ショットスコアの合計値で返す
-#  - 1投目で10本倒したらストライク
-#    - 1投目で10本倒したらストライクと判定する
-#  - 1投目で10本倒せず、2投目で全て倒したらスペア
-#    - 2投目で全て倒したらスペアと判定する
-  def initialize(first_mark, second_mark, third_mark =nil)
+  def initialize(first_mark, second_mark = nil, third_mark = nil)
     @first_shot = Shot.new(first_mark)
     @second_shot = Shot.new(second_mark)
     @third_shot = Shot.new(third_mark)
@@ -64,7 +58,6 @@ class Frame
   def decision
     return 'strike' if @first_shot.score == 10
     return 'spare' if @first_shot.score + @second_shot.score == 10
-
   end
 end
 
