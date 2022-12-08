@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require './Shot.rb'
 
 class HelloTest < Minitest::Test
   def test_greeting
