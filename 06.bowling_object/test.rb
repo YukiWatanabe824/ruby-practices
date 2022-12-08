@@ -30,6 +30,10 @@ class HelloTest < Minitest::Test
       frame = Frame.new('X', 5, 3)
       assert_equal 'strike', frame.decision
     end
+    def test_1投目と2投目の合計値が10だと文字列spareと返す
+      frame = Frame.new(7, 3)
+      assert_equal 'spare', frame.decision
+    end
   end
 end
 
@@ -59,7 +63,7 @@ class Frame
 
   def decision
     return 'strike' if @first_shot.score == 10
-    return 'spare' if @first_shot.score + @second_shot.score
+    return 'spare' if @first_shot.score + @second_shot.score == 10
 
   end
 end
