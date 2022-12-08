@@ -8,8 +8,7 @@ class HelloTest < Minitest::Test
 
   def test_数値1を受け取って数値1を返す
     shot = Shot.new(1)
-    result = shot.score
-    assert_equal 1, result
+    assert_equal 1, shot.score
   end
 
   def test_文字列Xを受け取って数値10を返す
