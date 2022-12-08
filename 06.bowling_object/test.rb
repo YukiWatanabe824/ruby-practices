@@ -26,6 +26,10 @@ class HelloTest < Minitest::Test
       frame = Frame.new('X', 'X', 'X')
       assert_equal 30, frame.score
     end
+    def test_1投目で10だと文字列strikeと返す
+      frame = Frame.new('X', 5, 3)
+      assert_equal 'strike', frame.decision
+    end
   end
 end
 
@@ -51,6 +55,12 @@ class Frame
 
   def score
     @first_shot.score + @second_shot.score + @third_shot.score
+  end
+
+  def decision
+    return 'strike' if @first_shot.score == 10
+    return 'spare' if @first_shot.score + @second_shot.score
+
   end
 end
 
