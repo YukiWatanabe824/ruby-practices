@@ -22,6 +22,10 @@ class HelloTest < Minitest::Test
       frame = Frame.new(0, 0)
       assert_equal 0, frame.score
     end
+    def test_XとXとXの3投の結果を受け取ってスコアの合計値を返す
+      frame = Frame.new('X', 'X', 'X')
+      assert_equal 30, frame.score
+    end
   end
 end
 
