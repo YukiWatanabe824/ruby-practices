@@ -12,7 +12,8 @@ class HelloTest < Minitest::Test
   end
 
   def test_文字列Xを受け取って数値10を返す
-
+    shot = Shot.new('X')
+    assert_equal 10, shot.score
   end
 end
 
