@@ -36,12 +36,49 @@ class HelloTest < Minitest::Test
       assert_equal 'spare', frame.decision
     end
   end
+
+  describe 'Game' do
+    def test_10フレームで1ゲームを構成する
+      game = Game.new
+      assert_equal 10, game.set_game.size
+    end
+  end
 end
 
 def greeting
   'hello world'
 end
 
+class Game
+## game 定義仕様TODO
+#  - 1ゲーム=10フレーム
+#  - ストライクの場合は2投目は表記しない
+#  - スペアのフレームの場合は次の1投の点を加算
+#  - ストライクのフレームの場合は次の2投の点を加算
+#  - 10フレーム目は1投目がストライクもしくは2投目がスペアだった場合、3投目が投げられる
+
+  def set_game
+    argv = ["6,3,9,0,0,3,8,2,7,3,X,9,1,8,0,X,6,4,5"]
+    shots = argv[0].split(',').map{ |shot| shot == 'X' ? 10 : shot.to_i }
+
+    frame = []
+    frames = []
+
+    shots.each do |shot|
+      frame << shot
+
+      if frames.size < 10
+        if frame.size >= 2 || shot == 10
+          frames << frame.dup
+          frame.clear
+        end
+      else # last frame
+        frames.last << shot
+      end
+    end
+    frames
+  end
+end
 
 class Frame
   attr_reader :first_shot, :second_shot, :third_shot
