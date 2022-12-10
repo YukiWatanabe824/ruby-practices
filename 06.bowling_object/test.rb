@@ -39,15 +39,13 @@ class HelloTest < Minitest::Test
 
   describe 'Game' do
     def test_10フレームで1ゲームを構成する
-      game = Game.new
+      game = Game.new(["0,10,1,5,0,0,0,0,X,X,X,5,1,8,1,0,4"])
       assert_equal 10, game.set_game.size
     end
     def test_全フレームストライク時にゲームスコア300点を返す
-      game = Game.new
-      game.set_game
+      game = Game.new(["X,X,X,X,X,X,X,X,X,X,X,X"])
       assert_equal 300, game.generate_score
     end
-
   end
 end
 
@@ -56,9 +54,10 @@ def greeting
 end
 
 class Game
-  def initialize
-    argv = ["X,X,X,X,X,X,X,X,X,X,X,X"]
-    @shots = argv[0].split(',').map{ |shot| shot == 'X' ? 10 : shot.to_i }
+  attr_accessor :score
+
+  def initialize(score)
+    @shots = score[0].split(',').map{ |shot| shot == 'X' ? 10 : shot.to_i }
   end
 
   def set_game
@@ -81,6 +80,7 @@ class Game
   end
 
   def generate_score
+    set_game
     game_score = 0
 
     (0..9).each do |n|
@@ -133,3 +133,6 @@ class Shot
     mark.to_i
   end
 end
+
+game = Game.new(ARGV)
+puts game.generate_score
