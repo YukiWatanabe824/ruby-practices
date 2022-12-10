@@ -56,15 +56,16 @@ class Game
 #  - スペアのフレームの場合は次の1投の点を加算
 #  - ストライクのフレームの場合は次の2投の点を加算
 #  - 10フレーム目は1投目がストライクもしくは2投目がスペアだった場合、3投目が投げられる
+  def initialize
+    argv = ["6,3,9,0,0,3,8,2,7,3,X,9,1,8,0,X,6,4,5"]
+    @shots = argv[0].split(',').map{ |shot| shot == 'X' ? 10 : shot.to_i }
+  end
 
   def set_game
-    argv = ["6,3,9,0,0,3,8,2,7,3,X,9,1,8,0,X,6,4,5"]
-    shots = argv[0].split(',').map{ |shot| shot == 'X' ? 10 : shot.to_i }
-
     frame = []
     frames = []
 
-    shots.each do |shot|
+    @shots.each do |shot|
       frame << shot
 
       if frames.size < 10
