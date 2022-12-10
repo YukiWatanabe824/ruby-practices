@@ -42,6 +42,12 @@ class HelloTest < Minitest::Test
       game = Game.new
       assert_equal 10, game.set_game.size
     end
+    def test_全フレームを単純に合計した点数を返す
+      game = Game.new
+      game.set_game
+      assert_equal 120, game.generate_score
+    end
+
   end
 end
 
@@ -57,28 +63,40 @@ class Game
 #  - ストライクのフレームの場合は次の2投の点を加算
 #  - 10フレーム目は1投目がストライクもしくは2投目がスペアだった場合、3投目が投げられる
   def initialize
-    argv = ["6,3,9,0,0,3,8,2,7,3,X,9,1,8,0,X,6,4,5"]
+    argv = ["X,X,X,X,X,X,X,X,X,X,X,X"]
     @shots = argv[0].split(',').map{ |shot| shot == 'X' ? 10 : shot.to_i }
   end
 
   def set_game
     frame = []
-    frames = []
+    @frames = []
 
     @shots.each do |shot|
       frame << shot
 
-      if frames.size < 10
+      if @frames.size < 10
         if frame.size >= 2 || shot == 10
-          frames << frame.dup
+          @frames << frame.dup
           frame.clear
         end
       else # last frame
-        frames.last << shot
+        @frames.last << shot
       end
     end
-    frames
+    @frames
   end
+
+  def generate_score
+    game_score = 0
+    @frames.each do |frame|
+      frame = Frame.new(frame[0],frame[1],frame[2])
+
+      game_score += frame.score
+    end
+    game_score
+  end
+
+
 end
 
 class Frame
