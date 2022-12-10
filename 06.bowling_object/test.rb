@@ -57,39 +57,40 @@ class Game
   attr_accessor :score
 
   def initialize(score)
-    @shots = score[0].split(',').map{ |shot| shot == 'X' ? 10 : shot.to_i }
+    @shots = score[0].split(',')
+  end
+
+  def generate_frame(shot, frame, frames)
+    if frames.size < 10
+      frames << frame.dup if frame.size >= 2 || shot == 'X'
+    else # last frame
+      frames.last << shot
+    end
+    frames
   end
 
   def set_game
     frame = []
-    @frames = []
-
+    frames = []
     @shots.each do |shot|
       frame << shot
-
-      if @frames.size < 10
-        if frame.size >= 2 || shot == 10
-          @frames << frame.dup
-          frame.clear
-        end
-      else # last frame
-        @frames.last << shot
-      end
+      frames = generate_frame(shot, frame, frames)
+      frame.clear if frame.size >= 2 || shot == 'X'
     end
-    @frames
+    frames
   end
 
   def generate_score
-    set_game
+    game = set_game
     game_score = 0
-
+byebug
     (0..9).each do |n|
-      frame, next_frame, after_next_frame = @frames.slice(n, 3)
+      frame, next_frame, after_next_frame = game.slice(n, 3)
       next_frame ||= []
       after_next_frame ||= []
       left_shots = next_frame + after_next_frame
 
-      if frame[0] == 10 # strike
+      if frame[0] == 'X' # strike
         game_score += frame.sum + left_shots.slice(0, 2).sum
       elsif frame.sum == 10 # spare
         game_score += frame.sum + left_shots.fetch(0)
