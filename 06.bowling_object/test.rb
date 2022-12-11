@@ -54,6 +54,7 @@ def greeting
 end
 
 class Game
+  FRAME_RANGE = 0..9
   attr_accessor :score
 
   def initialize(score)
@@ -80,24 +81,23 @@ class Game
     frames
   end
 
+  def generate_game_frame(game,n)
+    frame, next_frame, after_next_frame = game.slice(n, 3)
+    next_frame ||= []
+    after_next_frame ||= []
+    left_shots = next_frame + after_next_frame
+    return Frame.new(frame[0], frame[1], frame[2]) if n == 9 && frame[0] == 'X' # strike & last
+    return Frame.new(frame[0], left_shots[0], left_shots[1]) if frame[0] == 'X' # strike
+    return Frame.new(frame[0], frame[1], left_shots[0]) if frame.sum == 10 # spare
+    return Frame.new(frame[0],frame[1])
+  end
+
   def generate_score
     game = set_game
+    game_frame = {}
     game_score = 0
-byebug
-    (0..9).each do |n|
-      frame, next_frame, after_next_frame = game.slice(n, 3)
-      next_frame ||= []
-      after_next_frame ||= []
-      left_shots = next_frame + after_next_frame
 
-      if frame[0] == 'X' # strike
-        game_score += frame.sum + left_shots.slice(0, 2).sum
-      elsif frame.sum == 10 # spare
-        game_score += frame.sum + left_shots.fetch(0)
-      else
-        game_score += frame.sum
-      end
-    end
+    FRAME_RANGE.each { |n| game_score += generate_game_frame(game, n).score }
     game_score
   end
 end
