@@ -1,11 +1,9 @@
+# frozen_string_literal: true
 require 'minitest/autorun'
 require './Shot.rb'
 require 'byebug'
 
 class HelloTest < Minitest::Test
-  def test_greeting
-    assert_equal 'hello world', greeting
-  end
   describe 'Shot' do
     def test_数値1を受け取って数値1を返す
       shot = Shot.new(1)
@@ -23,34 +21,29 @@ class HelloTest < Minitest::Test
       frame = Frame.new(0, 0)
       assert_equal 0, frame.score
     end
+
     def test_XとXとXの3投の結果を受け取ってスコアの合計値を返す
       frame = Frame.new('X', 'X', 'X')
       assert_equal 30, frame.score
-    end
-    def test_1投目で10だと文字列strikeと返す
-      frame = Frame.new('X', 5, 3)
-      assert_equal 'strike', frame.decision
-    end
-    def test_1投目と2投目の合計値が10だと文字列spareと返す
-      frame = Frame.new(7, 3)
-      assert_equal 'spare', frame.decision
     end
   end
 
   describe 'Game' do
     def test_10フレームで1ゲームを構成する
       game = Game.new(["0,10,1,5,0,0,0,0,X,X,X,5,1,8,1,0,4"])
-      assert_equal 10, game.set_game.size
+      assert_equal 10, game.generate_frames.size
     end
+
     def test_全フレームストライク時にゲームスコア300点を返す
       game = Game.new(["X,X,X,X,X,X,X,X,X,X,X,X"])
       assert_equal 300, game.generate_score
     end
-  end
-end
 
-def greeting
-  'hello world'
+    def test_ランダムな値を渡したときに適切なスコアを返す
+      game = Game.new(['0,10,1,5,0,0,0,0,X,X,X,5,1,8,1,0,4'])
+      assert_equal 107, game.generate_score
+    end
+  end
 end
 
 class Game
@@ -70,7 +63,7 @@ class Game
     frames
   end
 
-  def set_game
+  def generate_frames
     frame = []
     frames = []
     @shots.each do |shot|
@@ -81,23 +74,23 @@ class Game
     frames
   end
 
-  def generate_game_frame(game,n)
+  def cal_frame_score(game,n)
     frame, next_frame, after_next_frame = game.slice(n, 3)
     next_frame ||= []
     after_next_frame ||= []
     left_shots = next_frame + after_next_frame
+
     return Frame.new(frame[0], frame[1], frame[2]) if n == 9 && frame[0] == 'X' # strike & last
     return Frame.new(frame[0], left_shots[0], left_shots[1]) if frame[0] == 'X' # strike
-    return Frame.new(frame[0], frame[1], left_shots[0]) if frame.sum == 10 # spare
+    return Frame.new(frame[0], frame[1], left_shots[0]) if frame.map(&:to_i).sum == 10 # spare
     return Frame.new(frame[0],frame[1])
   end
 
   def generate_score
-    game = set_game
-    game_frame = {}
+    game = generate_frames
     game_score = 0
 
-    FRAME_RANGE.each { |n| game_score += generate_game_frame(game, n).score }
+    FRAME_RANGE.each { |n| game_score += cal_frame_score(game, n).score }
     game_score
   end
 end
@@ -113,11 +106,6 @@ class Frame
 
   def score
     @first_shot.score + @second_shot.score + @third_shot.score
-  end
-
-  def decision
-    return 'strike' if @first_shot.score == 10
-    return 'spare' if @first_shot.score + @second_shot.score == 10
   end
 end
 
