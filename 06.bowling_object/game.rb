@@ -37,7 +37,7 @@ class Game
     after_next_frame ||= []
     left_shots = next_frame + after_next_frame
 
-    return Frame.new(frame[0], frame[1], frame[2]) if n == 9 && frame[0] == 'X' # strike & last
+    return Frame.new(frame[0], frame[1], frame[2]) if num == 9 && frame[0] == 'X' # strike & last
     return Frame.new(frame[0], left_shots[0], left_shots[1]) if frame[0] == 'X' # strike
     return Frame.new(frame[0], frame[1], left_shots[0]) if frame.map(&:to_i).sum == 10 # spare
 
