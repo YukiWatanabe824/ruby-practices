@@ -45,13 +45,18 @@ class Frame
     after_next_frame ||= []
     left_shots = next_frame + after_next_frame
 
+    strike_or_spare_point = strike_or_spare(num, frame, left_shots)
+    return strike_or_spare_point unless strike_or_spare_point.nil?
+
+    [frame[0], frame[1]]
+  end
+
+  def strike_or_spare(num, frame, left_shots)
     if num == 9 # last
       return [frame[0], frame[1], frame[2]] if frame[0] == 10 || frame[0] + frame[1] == 10 # strike or spare
     else
       return [frame[0], left_shots[0], left_shots[1]] if frame[0] == 10 # strike
       return [frame[0], frame[1], left_shots[0]] if frame.map.sum == 10 # spare
     end
-
-    [frame[0], frame[1]]
   end
 end
