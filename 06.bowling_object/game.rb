@@ -34,24 +34,26 @@ class Game
         frames.last << s
       end
     end
-    frames.map.with_index {|frame, idx| Frame.new(frame, idx)}
+    frames.map.with_index { |frame_score, idx| Frame.new(frame_score, idx) }
   end
 
   def score_calculate(frames)
-    FRAME_RANGE.map {|n| generate_point(frames, n)}.sum
+    FRAME_RANGE.map { |num| generate_point(frames, num) }.sum
   end
 
   def generate_point(frames, num)
-    if frames[num].is_last_frame
-      return frames[num].score
-    elsif frames[num].is_strike
-      return frames[num].score + frames[num + 1].frame.slice(0, 2).sum if frames[num].frame_range == 8
-      return frames[num].score + frames[num + 1].for_strike_score_cal + frames[num + 2].for_strike_score_cal_before_frame_is_strike if frames[num + 1].is_strike
-      return frames[num].score + frames[num + 1].for_strike_score_cal
-    elsif frames[num].is_spare
-      return frames[num].score + frames[num + 1].for_spare_score_cal
+    if frames[num].last_frame?
+      frames[num].score
+    elsif frames[num].strike?
+      return frames[num].score + frames[num + 1].frame.slice(0, 2).sum if frames[num].before_last_frame?
+
+      return frames[num].score + frames[num + 1].for_strike_score_cal + frames[num + 2].for_strike_score_cal_before_frame_is_strike if frames[num + 1].strike?
+
+      frames[num].score + frames[num + 1].for_strike_score_cal
+    elsif frames[num].spare?
+      frames[num].score + frames[num + 1].for_spare_score_cal
     else
-      return frames[num].score
+      frames[num].score
     end
   end
 end

@@ -1,35 +1,38 @@
 # frozen_string_literal: true
 
 require './shot'
-require 'byebug'
 
 class Frame
-  attr_reader :frame, :frame_range
+  attr_reader :frame, :frame_num
 
-  def initialize(frame, frame_range)
+  def initialize(frame, frame_num)
     @frame = frame
-    @frame_range = frame_range
+    @frame_num = frame_num
   end
 
-  def is_strike
+  def strike?
     'strike' if frame[0] == 10
   end
 
-  def is_spare
+  def spare?
     'spare' if frame.sum == 10
   end
 
-  def is_last_frame
-    'last' if frame_range == 9
+  def before_last_frame?
+    'the one before last frame' if frame_num == 8
+  end
+
+  def last_frame?
+    'last' if frame_num == 9
   end
 
   def for_strike_score_cal
-    # ストライクとスペア用に値を返す
-    return frame[0] if is_strike
-    return frame.sum
+    return frame[0] if strike?
+
+    frame.sum
   end
 
-  def for_strike_score_cal_before_frame_is_strike # 一個前のフレームがストライクの場合に一投目が計算される用
+  def for_strike_score_cal_before_frame_is_strike
     frame[0]
   end
 
