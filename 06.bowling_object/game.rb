@@ -45,7 +45,7 @@ class Game
     if frames[num].last_frame?
       frames[num].score
     elsif frames[num].strike?
-      return frames[num].score + frames[num + 1].frame.slice(0, 2).sum if frames[num].before_last_frame?
+      return frames[num].score + frames[num + 1].shots.slice(0, 2).sum if frames[num].before_last_frame?
 
       return frames[num].score + frames[num + 1].for_strike_score_cal + frames[num + 2].for_strike_score_cal_before_frame_is_strike if frames[num + 1].strike?
 
