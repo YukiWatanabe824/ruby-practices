@@ -3,8 +3,6 @@
 require './shot'
 
 class Frame
-  private attr_reader :shots
-
   def initialize(shots, num)
     @shots = shots
     @num = num
@@ -27,19 +25,19 @@ class Frame
   end
 
   def first_shot
-    shots[0]
+    @shots[0]
   end
 
   def strike?
-    shots[0] == 10
+    @shots[0] == 10
   end
 
   def two_shot_sum
-    shots.slice(0, 2).sum
+    @shots.slice(0, 2).sum
   end
 
   def spare?
-    shots.sum == 10
+    @shots.sum == 10
   end
 
   private
@@ -53,7 +51,6 @@ class Frame
   end
 
   def base_score
-    shots.sum
+    @shots.sum
   end
-
 end

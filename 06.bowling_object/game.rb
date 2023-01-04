@@ -2,7 +2,6 @@
 
 require './frame'
 require './shot'
-require 'byebug'
 
 class Game
   def initialize(score)
