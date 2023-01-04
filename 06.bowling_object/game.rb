@@ -6,21 +6,21 @@ require 'byebug'
 
 class Game
   def initialize(score)
-    @shots = score[0].split(',').map { |shot| Shot.new(shot).score }
+    shots = score[0].split(',').map { |shot| Shot.new(shot).score }
+    @frames = generate_frame_array(shots)
   end
 
   def generate_score
-    frames = generate_frame_array
-    score_calculate(frames)
+    score_calculate(@frames)
   end
 
   private
 
-  def generate_frame_array
+  def generate_frame_array(shots)
     frame = []
     frames = []
 
-    @shots.each do |s|
+    shots.each do |s|
       frame << s
 
       if frames.size < 10
