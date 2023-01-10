@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require './ls-long'
 require 'etc'
+require './ls_long'
 
-class File_stat
-
+class FileStat
   MODE_MAP = {
     '0' => '---',
     '1' => '--x',
@@ -23,18 +22,18 @@ class File_stat
 
   def stat
     @paths.map do |path|
-    fs = File.stat(path)
-    {
-      path: path,
-      type: format_type(fs),
-      mode: format_mode(fs.mode),
-      nlink: fs.nlink,
-      username: Etc.getpwuid(fs.uid).name,
-      grpname: Etc.getgrgid(fs.gid).name,
-      bytesize: fs.size,
-      mtime: format_mtime(fs.mtime),
-      blocks: fs.blocks
-    }
+      fs = File.stat(path)
+      {
+        path: path,
+        type: format_type(fs),
+        mode: format_mode(fs.mode),
+        nlink: fs.nlink,
+        username: Etc.getpwuid(fs.uid).name,
+        grpname: Etc.getgrgid(fs.gid).name,
+        bytesize: fs.size,
+        mtime: format_mtime(fs.mtime),
+        blocks: fs.blocks
+      }
     end
   end
 

@@ -3,7 +3,6 @@
 require './ls'
 
 class NormalFormat
-
   COLUMN_NUMBER = 3
 
   def initialize(paths)

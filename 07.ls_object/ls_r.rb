@@ -11,4 +11,3 @@ class Reverse
     @paths.reverse
   end
 end
-

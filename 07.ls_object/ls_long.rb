@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require './ls'
 require 'etc'
-require './ls-long-file-stat'
+require './ls'
+require './ls_long_file_stat'
 
 class LongFormat
-
-
   COLUMN_NUMBER = 3
 
   def initialize(paths)
@@ -14,7 +12,7 @@ class LongFormat
   end
 
   def format_long
-    file_stats_objs = File_stat.new(@paths)
+    file_stats_objs = FileStat.new(@paths)
     path_stats = file_stats_objs.stat
 
     puts "total #{file_stats_objs.total_block}"
@@ -34,5 +32,4 @@ class LongFormat
       "%<path>s\n"
     ].join(' '), stat)
   end
-
 end
