@@ -2,7 +2,7 @@
 
 require './ls'
 
-class R_option
+class Reverse
   def initialize(paths)
     @paths = paths
   end

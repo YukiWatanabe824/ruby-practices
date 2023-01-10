@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'etc'
-require 'optparse'
 require './ls-r'
 require './ls-normal'
-require './ls-l'
+require './ls-long'
+require './ls-a'
 
 class Ls
   def initialize(params)
@@ -12,17 +12,15 @@ class Ls
   end
 
   def exec
-    paths = search_path(dotmatch: @params['a'])
+    paths = All.new(dotmatch: @params['a']).search_path
     list_paths(paths, long_format: @params['l'], reverse: @params['r'])
   end
 
-  def search_path(dotmatch: false)
-    dotmatch ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
-  end
+  private
 
   def list_paths(paths, reverse: false, long_format: false)
-    paths = R_option.new(paths).reverse if reverse
-    long_format ? Ls_long.new(paths).list_long : Ls_normal.new(paths).list_normal
+    paths = Reverse.new(paths).reverse if reverse
+    long_format ? LongFormat.new(paths).format_long : NormalFormat.new(paths).format_normal
   end
 end
 

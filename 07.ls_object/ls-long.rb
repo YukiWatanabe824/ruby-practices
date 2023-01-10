@@ -2,9 +2,9 @@
 
 require './ls'
 require 'etc'
-require './ls-l-file_stat.rb'
+require './ls-long-file-stat'
 
-class Ls_long
+class LongFormat
 
 
   COLUMN_NUMBER = 3
@@ -13,13 +13,15 @@ class Ls_long
     @paths = paths
   end
 
-  def list_long
+  def format_long
     file_stats_objs = File_stat.new(@paths)
     path_stats = file_stats_objs.stat
 
     puts "total #{file_stats_objs.total_block}"
     path_stats.each { |stat| print_long_format(stat, file_stats_objs.max_size_map) }
   end
+
+  private
 
   def print_long_format(stat, max_size_map)
     printf([

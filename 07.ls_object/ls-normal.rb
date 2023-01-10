@@ -2,7 +2,7 @@
 
 require './ls'
 
-class Ls_normal
+class NormalFormat
 
   COLUMN_NUMBER = 3
 
@@ -10,7 +10,7 @@ class Ls_normal
     @paths = paths
   end
 
-  def list_normal
+  def format_normal
     row_number = (@paths.size / COLUMN_NUMBER).ceil
     max_length = text_max_length
 
