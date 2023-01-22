@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
+require 'byebug'
 require 'etc'
+require './ls_format'
 require './ls_r'
 require './ls_normal'
 require './ls_long'
 require './ls_a'
+
 
 class Ls
   def initialize(params)
@@ -12,14 +15,15 @@ class Ls
   end
 
   def exec
-    paths = All.new(dotmatch: @params['a']).search_path
+    paths = Option.new(dotmatch: @params['a']).a_option
     list_paths(paths, long_format: @params['l'], reverse: @params['r'])
   end
 
   private
 
   def list_paths(paths, reverse: false, long_format: false)
-    paths = Reverse.new(paths).reverse if reverse
-    long_format ? LongFormat.new(paths).format_long : NormalFormat.new(paths).format_normal
+    paths = paths.r_option if reverse
+    #long_format ? LongFormat.new(paths).output : NormalFormat.new(paths).output
+    NormalFormat.new(paths).format
   end
 end

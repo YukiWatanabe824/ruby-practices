@@ -2,12 +2,17 @@
 
 require './ls'
 
-class All
-  def initialize(dotmatch: false)
+class Option
+  def initialize(dotmatch: false, paths: nil)
     @dotmatch = dotmatch
+    @paths = paths
   end
 
-  def search_path
+  def a_option
     @dotmatch ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
+  end
+
+  def r_option
+    @paths.reverse
   end
 end

@@ -1,14 +1,17 @@
 # frozen_string_literal: true
 
+require './ls_format'
 require 'etc'
 require './ls'
 require './ls_long_file_stat'
 
-class LongFormat
-  COLUMN_NUMBER = 3
-
+class LongFormat < Format
   def initialize(paths)
     @paths = paths
+  end
+
+  def export
+    super
   end
 
   def format_long
