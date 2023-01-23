@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'byebug'
 require 'etc'
-require './ls_format'
 require './ls_normal'
 require './ls_long'
 
@@ -20,6 +18,7 @@ class Ls
 
   def list_paths(paths, reverse: false, long_format: false)
     paths = paths.reverse if reverse
-    long_format ? LongFormat.new(paths).format : NormalFormat.new(paths).format
+    paths = long_format ? LongFormat.new(paths) : NormalFormat.new(paths)
+    paths.output
   end
 end
