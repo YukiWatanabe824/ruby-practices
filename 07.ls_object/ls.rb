@@ -10,7 +10,7 @@ class Ls
   end
 
   def exec
-    paths = @params['a'] ? Dir.glob('*', File::FNM_DOTMATCH) : Dir.glob('*')
+    paths = Dir.glob('*', @params['a'] ? File::FNM_DOTMATCH : File::FNM_PATHNAME)
     list_paths(paths, long_format: @params['l'], reverse: @params['r'])
   end
 
